@@ -11,6 +11,9 @@ package UnionFind;
  *
  * Quadratic time
  *
+ * Worst Case Time: M N
+ * M union-find operations on a set of N objects
+ *
  * @author Denielle Kirk Abaquita
  * @version 6/12/18 @ 8:14 AM
  */

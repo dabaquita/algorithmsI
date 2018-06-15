@@ -1,11 +1,20 @@
 package UnionFind;
 
 /**
- * PCompressQuickUnion
+ * PCompressQuickUnion (Path compression w/ Weighted Quick Union)
  * Purpose: Improves upon the
  * weighted quick union algorithm.
  *
+ * Function: If the tree has multiple
+ * levels, this algorithm works to
+ * compress the tree into a smaller,
+ * compact tree with less levels.
+ *
  * ** ARRAY DATA TYPE VERSION **
+ *
+ * Worst Case Time: N + M lg* N
+ * M union-find operations on a set of N objects
+ * lg is log base 2
  *
  * @author Denielle Kirk Abaquita
  * @version 6/15/18 @ 7:57 AM
@@ -37,7 +46,10 @@ public class PCompressQuickUnion {
     {
         // iterates until a root is found (8:8, 7:7, etc.)
         while (i != id[i])
+        {
+            id[i] = id[id[i]];      // every node points to its grandparent
             i = id[i];
+        }
 
         return i;
     }

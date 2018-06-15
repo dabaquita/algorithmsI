@@ -10,6 +10,9 @@ package UnionFind;
  *
  * *** STILL SLOW - Can Iterate N Times ***
  *
+ * Worst Case Time: M N
+ *  * M union-find operations on a set of N objects
+ *
  * @author Denielle Kirk Abaquita
  * @version 6/12/18 @ 9:27 AM
  */
