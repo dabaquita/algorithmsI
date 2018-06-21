@@ -3,8 +3,6 @@ package Percolation;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import java.util.Random;
-
 /**
  * Percolation
  * Purpose: Model of percolation
@@ -25,7 +23,7 @@ import java.util.Random;
  * percolates - if top and bottom are connected by open sites
  *
  * @author Denielle Kirk Abaquita
- * @version 6/15/18 @ 8:55 AM
+ * @version 6/21/18 @ 11:25 AM
  */
 
 public class Percolation {
@@ -34,7 +32,7 @@ public class Percolation {
     private WeightedQuickUnionUF topUF;                     // top UF object, used for isFull()
     private WeightedQuickUnionUF backwashUF;                // top & bottom UF object w/ backwash, shows percolates()
     private boolean[] openSites;                            // array of open sites
-    private final int n, SIZE, TOP_INDEX, BOTTOM_INDEX;     // the size of the grid, top node, bottom node
+    private final int n, TOP_INDEX, BOTTOM_INDEX;           // the size of the grid, top node, bottom node
     private int numOpen = 0;                                // number of open sites
 
     /**
@@ -46,7 +44,7 @@ public class Percolation {
         if (n <= 0) throw new IllegalArgumentException("N cannot be <= 0");
 
         this.n = n;
-        SIZE = (n + 2) * (n + 2);               // initializes the size of the grid, plus the two extra nodes
+        int SIZE = (n + 2) * (n + 2);
         TOP_INDEX = 0;                          // top virtual node
         BOTTOM_INDEX = SIZE - 1;                // bottom virtual node
 
@@ -63,9 +61,9 @@ public class Percolation {
         // Union corresponding sites (inclusive of 1 and n)
         for (int i = 1; i <= n; i++)
         {
-            topUF.union(TOP_INDEX, xyto1D(1, i));               // Top UF object for is in isFull(), no backwash
+            topUF.union(TOP_INDEX, xyto1D(0, i));               // Top UF object for is in isFull(), no backwash
 
-            backwashUF.union(TOP_INDEX, xyto1D(1, i));          // Fully connected UF object so show percolates()
+            backwashUF.union(TOP_INDEX, xyto1D(0, i));          // Fully connected UF object so show percolates()
             backwashUF.union(BOTTOM_INDEX, xyto1D(n, i));
         }
     }
@@ -89,8 +87,6 @@ public class Percolation {
      */
     private int xyto1D(int row, int col)
     {
-        validateIndex(row, col);
-
         return (col + 2) + row * n;     // converts the 2D coordinate to a unique 1D identifier
     }
 
@@ -106,6 +102,13 @@ public class Percolation {
 
         int site1D = xyto1D(row, col);         // variables holds the 1D index of site
         openSites[site1D] = true;              // open the site by changing value at the index to true
+
+        // Connection of first row to top virtual node
+        if (row == 1)
+        {
+            topUF.union(TOP_INDEX, xyto1D(row, col));
+            backwashUF.union(TOP_INDEX, xyto1D(row, col));
+        }
 
         // Connection to top site if open
         if (row > 1 && isOpen(row - 1, col))
