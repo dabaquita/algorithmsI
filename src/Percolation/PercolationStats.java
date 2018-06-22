@@ -16,14 +16,34 @@ import edu.princeton.cs.algs4.StdStats;
 public class PercolationStats {
 
     // Instance variables
+    private double[] listP;            // holds the estimates of the percolation threshold
 
     /** CONSTRUCTOR
-     * @param n - creates n-by-n grid
+     * @param n - creates n-by-n grid, used for Percolation()
      * @param trials - number of independent experiments
      */
-    public PercolationStats(int n, int trials)
+    public PercolationStats(int n, int trials) throws IllegalArgumentException
     {
+        listP = new double[trials];
 
+        // Check parameters if within range
+        if (n <= 0 || trials <= 0) throw new IllegalArgumentException("Value(s) not greater than 0.");
+
+        for (int k = 0; k < trials; k++)
+        {
+            Percolation percolation = new Percolation(n);           // create new Percolation object
+
+            // while system does not percolate, open random sites
+            while (!percolation.percolates())
+            {
+                int row = StdRandom.uniform(1, n + 1);
+                int col = StdRandom.uniform(1, n+ 1);
+
+                percolation.open(row, col);                         // open the random site
+            }
+
+            listP[k] = (double) percolation.numberOfOpenSites() / (n * n);   // add estimate to list from number open / total
+        }
     }
 
     /**
@@ -31,7 +51,7 @@ public class PercolationStats {
      */
     public double mean()
     {
-
+        return StdStats.mean(listP);
     }
 
     /**
@@ -39,7 +59,7 @@ public class PercolationStats {
      */
     public double stddev()
     {
-
+        return StdStats.stddev(listP);
     }
 
     /**
@@ -47,7 +67,7 @@ public class PercolationStats {
      */
     public double confidenceLo()
     {
-
+        return mean() - (1.96 * stddev()) / Math.sqrt(listP.length);
     }
 
     /**
@@ -55,13 +75,27 @@ public class PercolationStats {
      */
     public double confidenceHi()
     {
-
+        return mean() + (1.96 * stddev()) / Math.sqrt(listP.length);
     }
 
     /** Test Client */
     public static void main(String[] args)
     {
+        int n = Integer.parseInt(args[0]);
+        int t = Integer.parseInt(args[1]);
 
+        PercolationStats percolationStats = new PercolationStats(n, t);
+
+        /*for (double f: percolationStats.listP)
+        {
+            System.out.println(f);
+        }*/
+
+        // print out results
+        System.out.printf("%s%22s %1.5f", "mean", "=", percolationStats.mean());
+        System.out.printf("\n%s%20s %1.5f", "stddev", "=", percolationStats.stddev());
+        System.out.printf("\n%s%3s[%1.5f,%1.5f]", "95% confidence interval", "=",
+                                        percolationStats.confidenceLo(), percolationStats.confidenceHi());
     }
 
 }
