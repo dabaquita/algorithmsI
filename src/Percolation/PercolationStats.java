@@ -22,7 +22,7 @@ public class PercolationStats {
      * @param n - creates n-by-n grid, used for Percolation()
      * @param trials - number of independent experiments
      */
-    public PercolationStats(int n, int trials) throws IllegalArgumentException
+    public PercolationStats(int n, int trials)
     {
         listP = new double[trials];
 
@@ -85,11 +85,6 @@ public class PercolationStats {
         int t = Integer.parseInt(args[1]);
 
         PercolationStats percolationStats = new PercolationStats(n, t);
-
-        /*for (double f: percolationStats.listP)
-        {
-            System.out.println(f);
-        }*/
 
         // print out results
         System.out.printf("%s%22s %1.5f", "mean", "=", percolationStats.mean());

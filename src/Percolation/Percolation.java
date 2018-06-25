@@ -31,21 +31,21 @@ public class Percolation {
     private WeightedQuickUnionUF topUF;                     // top UF object, used for isFull()
     private WeightedQuickUnionUF backwashUF;                // top & bottom UF object w/ backwash, shows percolates()
     private boolean[] openSites;                            // array of open sites
-    private final int n, TOP_INDEX, BOTTOM_INDEX;           // the size of the grid, top node, bottom node
+    private int n, topIndex, bottomIndex;                   // the size of the grid, top node, bottom node
     private int numOpen = 0;                                // number of open sites
 
     /**
      * Constructor
      * that creates an n-by-n grid with all sites blocked
      */
-    public Percolation(int n) throws IllegalArgumentException
+    public Percolation(int n)
     {
         if (n <= 0) throw new IllegalArgumentException("N cannot be <= 0");
 
         this.n = n;
         int SIZE = (n + 2) * (n + 2);
-        TOP_INDEX = 0;                          // top virtual node
-        BOTTOM_INDEX = SIZE - 1;                // bottom virtual node
+        topIndex = 0;                          // top virtual node
+        bottomIndex = SIZE - 1;                // bottom virtual node
 
         openSites = new boolean[SIZE];          // initialize open sites list
         for (int i = 0; i < SIZE; i++)
@@ -60,10 +60,10 @@ public class Percolation {
         // Union corresponding sites (inclusive of 1 and n)
         for (int i = 1; i <= n; i++)
         {
-            topUF.union(TOP_INDEX, xyto1D(0, i));               // Top UF object for is in isFull(), no backwash
+            topUF.union(topIndex, xyto1D(0, i));               // Top UF object for is in isFull(), no backwash
 
-            backwashUF.union(TOP_INDEX, xyto1D(0, i));          // Fully connected UF object so show percolates()
-            backwashUF.union(BOTTOM_INDEX, xyto1D(n, i));
+            backwashUF.union(topIndex, xyto1D(0, i));          // Fully connected UF object so show percolates()
+            backwashUF.union(bottomIndex, xyto1D(n, i));
         }
     }
 
@@ -72,9 +72,9 @@ public class Percolation {
      * @param row - value to test
      * @param col = value to test
      */
-    private void validateIndex(int row, int col) throws IndexOutOfBoundsException
+    private void validateIndex(int row, int col)
     {
-        if ( row < 1 || row > n || col < 1 || col > n)
+        if (row < 1 || row > n || col < 1 || col > n)
             throw new IndexOutOfBoundsException("Index is not between 1 and n, inclusive.");
     }
 
@@ -105,8 +105,8 @@ public class Percolation {
         // Connection of first row to top virtual node
         if (row == 1)
         {
-            topUF.union(TOP_INDEX, xyto1D(row, col));
-            backwashUF.union(TOP_INDEX, xyto1D(row, col));
+            topUF.union(topIndex, xyto1D(row, col));
+            backwashUF.union(topIndex, xyto1D(row, col));
         }
 
         // Connection to top site if open
@@ -156,7 +156,7 @@ public class Percolation {
     }
 
     /**
-     * is site (row, col) connected to the top by neighboring sites (ie TOP_INDEX)?
+     * is site (row, col) connected to the top by neighboring sites (ie topIndex)?
      * @param row - row coordinate
      * @param col - column coordinate
      * @return is site full
@@ -167,7 +167,7 @@ public class Percolation {
 
         int indexOfSite = xyto1D(row, col);                 // convert to 1D coordinate
 
-        return topUF.connected(TOP_INDEX, indexOfSite);     // returns if site is connected to the top index
+        return topUF.connected(topIndex, indexOfSite);     // returns if site is connected to the top index
     }
 
     /**
@@ -180,7 +180,7 @@ public class Percolation {
      */
     public boolean percolates()
     {
-        return backwashUF.connected(TOP_INDEX, BOTTOM_INDEX);       // are top and bottom virtual sites connected?
+        return backwashUF.connected(topIndex, bottomIndex);       // are top and bottom virtual sites connected?
     }
 
     /** Optional Test Client */
