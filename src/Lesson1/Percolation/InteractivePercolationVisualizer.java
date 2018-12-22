@@ -1,4 +1,4 @@
-package Percolation;
+package Lesson1.Percolation;
 
 /******************************************************************************
  *  Compilation:  javac InteractivePercolationVisualizer.java

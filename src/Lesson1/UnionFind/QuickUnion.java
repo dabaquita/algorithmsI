@@ -1,4 +1,4 @@
-package UnionFind;
+package Lesson1.UnionFind;
 
 /**
  * QuickUnion
